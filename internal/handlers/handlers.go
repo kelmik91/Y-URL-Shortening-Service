@@ -32,7 +32,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		//формируем ответ
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte(*config.BaseUrlRes + uid))
+		w.Write([]byte(*config.BaseUrlRes + "/" + uid))
 		return
 	}
 
