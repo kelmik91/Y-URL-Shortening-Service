@@ -6,13 +6,13 @@ import (
 	"net/http"
 )
 
-func Run(host, port string) {
+func Run(host string) {
 	r := chi.NewRouter()
 
 	r.Post("/", handlers.MainHandler)
 	r.Get("/{id}", handlers.MainHandler)
 
-	err := http.ListenAndServe(host+":"+port, r)
+	err := http.ListenAndServe(host, r)
 	if err != nil {
 		panic(err)
 	}
