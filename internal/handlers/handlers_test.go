@@ -84,15 +84,16 @@ func TestMainHandler(t *testing.T) {
 			r := httptest.NewRequest(tt.args.method, target, strings.NewReader(tt.args.body))
 			w := httptest.NewRecorder()
 			MainHandler(w, r)
-			w.Result()
+			response := w.Result()
+			defer response.Body.Close()
 
 			if tt.args.method == http.MethodPost {
-				assert.Equal(t, tt.want.statusCode, w.Result().StatusCode)
+				assert.Equal(t, tt.want.statusCode, response.StatusCode)
 				resURL = w.Body.String()
 
 			}
 			if tt.args.method == http.MethodGet {
-				assert.Equal(t, tt.want.statusCode, w.Result().StatusCode)
+				assert.Equal(t, tt.want.statusCode, response.StatusCode)
 				assert.Equal(t, tt.want.link, w.Header().Get("Location"))
 			}
 		})
