@@ -63,5 +63,5 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 
 	//если не GET или POST отправляем статус 400
 	w.WriteHeader(http.StatusBadRequest)
-	return
+	//return
 }
