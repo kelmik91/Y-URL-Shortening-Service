@@ -27,12 +27,12 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		//Думаю лучше использовать хеш-функцию и проверку на существование ссылки в хранилище.
 		//Пока сделал более простой вариант.
 		uid := uuid.New().String()
-		storage.StorageUrl[uid] = string(body)
+		storage.StorageURL[uid] = string(body)
 
 		//формируем ответ
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte(config.BaseUrlRes + "/" + uid))
+		w.Write([]byte(config.BaseURLRes + "/" + uid))
 		return
 	}
 
@@ -50,13 +50,13 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 
 		//проверяем есть ли ID в хранилище
 		id = strings.ReplaceAll(id, "/", "")
-		if _, ok := storage.StorageUrl[id]; !ok {
+		if _, ok := storage.StorageURL[id]; !ok {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		//формируем ответ
-		w.Header().Add("Location", storage.StorageUrl[id])
+		w.Header().Add("Location", storage.StorageURL[id])
 		w.WriteHeader(http.StatusTemporaryRedirect)
 		return
 	}
