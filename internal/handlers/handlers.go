@@ -6,61 +6,59 @@ import (
 	"github.com/kelmik91/Y-URL-Shortening-Service/internal/storage"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
-func MainHandler(w http.ResponseWriter, r *http.Request) {
+var warehouse = storage.New()
 
-	// Если пришел POST
-	if r.Method == http.MethodPost {
+func MainHandlerGetById(w http.ResponseWriter, r *http.Request) {
+	//Получаем ID из урла
+	id := r.URL.Path
 
-		//получаем тело запроса
-		body, _ := io.ReadAll(r.Body)
-
-		//проверяем что тело не пустое
-		if string(body) == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		//Создаем ID для ссылки.
-		//Думаю лучше использовать хеш-функцию и проверку на существование ссылки в хранилище.
-		//Пока сделал более простой вариант.
-		uid := uuid.New().String()
-		storage.StorageURL[uid] = string(body)
-
-		//формируем ответ
-		w.WriteHeader(http.StatusCreated)
-		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte(config.BaseURLRes + "/" + uid))
+	//проверяем запрос на пустой ID
+	if id == "/" {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Если пришел GET
-	if r.Method == http.MethodGet {
-
-		//Получаем ID из урла
-		id := r.URL.Path
-
-		//проверяем запрос на пустой ID
-		if id == "/" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		//проверяем есть ли ID в хранилище
-		id = strings.ReplaceAll(id, "/", "")
-		if _, ok := storage.StorageURL[id]; !ok {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		//формируем ответ
-		w.Header().Add("Location", storage.StorageURL[id])
-		w.WriteHeader(http.StatusTemporaryRedirect)
+	//проверяем есть ли ID в хранилище
+	id = strings.ReplaceAll(id, "/", "")
+	warehouseURL := warehouse.Get(id)
+	if warehouseURL == "" {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	//если не GET или POST отправляем статус 400
-	w.WriteHeader(http.StatusBadRequest)
+	//формируем ответ
+	w.Header().Add("Location", warehouse.Get(id))
+	w.WriteHeader(http.StatusTemporaryRedirect)
+}
+
+func MainHandlerSet(w http.ResponseWriter, r *http.Request) {
+	//получаем тело запроса
+	body, _ := io.ReadAll(r.Body)
+
+	_, err := url.ParseRequestURI(string(body))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	//проверяем что тело не пустое
+	if string(body) == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	//Создаем ID для ссылки.
+	//Думаю лучше использовать хеш-функцию и проверку на существование ссылки в хранилище.
+	//Пока сделал более простой вариант.
+	uid := uuid.New().String()
+	warehouse.AddURL(uid, string(body))
+
+	//формируем ответ
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(config.BaseURLRes + "/" + uid))
 }
