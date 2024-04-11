@@ -84,7 +84,7 @@ func TestHandlers(t *testing.T) {
 			r := httptest.NewRequest(tt.args.method, target, strings.NewReader(tt.args.body))
 			w := httptest.NewRecorder()
 			if tt.args.method == http.MethodGet {
-				MainHandlerGetById(w, r)
+				MainHandlerGetByID(w, r)
 			} else {
 				MainHandlerSet(w, r)
 			}

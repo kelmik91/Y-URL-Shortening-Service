@@ -12,7 +12,7 @@ import (
 
 var warehouse = storage.New()
 
-func MainHandlerGetById(w http.ResponseWriter, r *http.Request) {
+func MainHandlerGetByID(w http.ResponseWriter, r *http.Request) {
 	//Получаем ID из урла
 	id := r.URL.Path
 

@@ -10,7 +10,7 @@ func Run(host string) {
 	r := chi.NewRouter()
 
 	r.Post("/", handlers.MainHandlerSet)
-	r.Get("/{id}", handlers.MainHandlerGetById)
+	r.Get("/{id}", handlers.MainHandlerGetByID)
 
 	err := http.ListenAndServe(host, r)
 	if err != nil {
