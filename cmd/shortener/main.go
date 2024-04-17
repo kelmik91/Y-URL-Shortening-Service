@@ -1,10 +1,12 @@
 package main
 
-import "github.com/kelmik91/Y-URL-Shortening-Service/internal/server"
+import (
+	"github.com/kelmik91/Y-URL-Shortening-Service/internal/config"
+	"github.com/kelmik91/Y-URL-Shortening-Service/internal/server"
+)
 
 func main() {
-	host := "localhost"
-	port := "8080"
+	config.ParseFlags()
 
-	server.Run(host, port)
+	server.Run(*config.Host)
 }

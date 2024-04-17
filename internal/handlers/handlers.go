@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/google/uuid"
+	"github.com/kelmik91/Y-URL-Shortening-Service/internal/config"
 	"github.com/kelmik91/Y-URL-Shortening-Service/internal/storage"
 	"io"
 	"net/http"
@@ -31,7 +32,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		//формируем ответ
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte("http://localhost:8080/" + uid))
+		w.Write([]byte(*config.BaseURLRes + "/" + uid))
 		return
 	}
 
