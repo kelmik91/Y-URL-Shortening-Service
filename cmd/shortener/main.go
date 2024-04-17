@@ -8,5 +8,5 @@ import (
 func main() {
 	config.ParseFlags()
 
-	server.Run(*config.Host)
+	server.Run(config.Host)
 }

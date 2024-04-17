@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestMainHandler(t *testing.T) {
+func TestHandlers(t *testing.T) {
 	var resURL string
 	type args struct {
 		method string
@@ -28,7 +28,7 @@ func TestMainHandler(t *testing.T) {
 			name: "add link",
 			args: args{
 				method: http.MethodPost,
-				body:   "ya.ru",
+				body:   "https://ya.ru",
 				target: "localhost:8080",
 			},
 			want: want{
@@ -44,7 +44,7 @@ func TestMainHandler(t *testing.T) {
 			},
 			want: want{
 				statusCode: 307,
-				link:       "ya.ru",
+				link:       "https://ya.ru",
 			},
 		},
 		{
@@ -83,7 +83,13 @@ func TestMainHandler(t *testing.T) {
 
 			r := httptest.NewRequest(tt.args.method, target, strings.NewReader(tt.args.body))
 			w := httptest.NewRecorder()
-			MainHandler(w, r)
+
+			if tt.args.method == http.MethodGet {
+				MainHandlerGetByID(w, r)
+			} else {
+				MainHandlerSet(w, r)
+			}
+
 			response := w.Result()
 			defer response.Body.Close()
 

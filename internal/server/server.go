@@ -9,8 +9,8 @@ import (
 func Run(host string) {
 	r := chi.NewRouter()
 
-	r.Post("/", handlers.MainHandler)
-	r.Get("/{id}", handlers.MainHandler)
+	r.Post("/", handlers.MainHandlerSet)
+	r.Get("/{id}", handlers.MainHandlerGetByID)
 
 	err := http.ListenAndServe(host, r)
 	if err != nil {
