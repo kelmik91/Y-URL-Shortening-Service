@@ -1,16 +1,10 @@
 package main
 
-import (
-	"github.com/kelmik91/Y-URL-Shortening-Service/internal/handlers"
-	"net/http"
-)
+import "github.com/kelmik91/Y-URL-Shortening-Service/internal/server"
 
 func main() {
-	mux := http.DefaultServeMux
-	mux.HandleFunc("/", handlers.MainHandler)
+	host := "localhost"
+	port := "8080"
 
-	err := http.ListenAndServe("localhost:8080", mux)
-	if err != nil {
-		panic(err)
-	}
+	server.Run(host, port)
 }
